@@ -41,14 +41,13 @@
 
     <!-- Report Execution and Scheduling objects -->
 
-    <!--<bean id="checkTasksTimerTask" class="com.teamfora.server.task.CheckTasksTimerTask" />
+    <bean id="checkTasksTimerTask" class="ru.reports.server.task.LoadDataTimerTask" />
 
-    &lt;!&ndash; TODO use newest Spring Schedule API &ndash;&gt;
+    <!-- TODO use newest Spring Schedule API -->
     <bean id="scheduledCheckTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
-        &lt;!&ndash; wait 60 seconds before starting repeated execution &ndash;&gt;
-        <property name="delay" value="60000" />
-        &lt;!&ndash; run every 1 hour &ndash;&gt;
-        <property name="period" value="3600000" />
+        <!-- wait 60 seconds before starting repeated execution -->
+        <property name="delay" value="5000" />
+        <!-- run every 1 hour -->
         <property name="timerTask" ref="checkTasksTimerTask" />
     </bean>
 
@@ -58,6 +57,6 @@
                 <ref bean="scheduledCheckTask" />
             </list>
         </property>
-    </bean>-->
+    </bean>
 
 </beans>

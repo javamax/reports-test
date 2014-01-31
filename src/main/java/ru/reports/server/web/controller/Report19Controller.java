@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ru.reports.server.cache.DataHolder;
 
 import java.util.*;
 
@@ -24,22 +25,45 @@ public class Report19Controller {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public List<Report> list(@RequestParam(required = false) Set<Byte> statuses,
+    public List<Map<String, Object>> list(@RequestParam(required = false) Set<Byte> statuses,
                            @RequestParam(required = false) Date startDate,
                            @RequestParam(required = false) Date endDate,
                            @RequestParam(required = false, defaultValue = LIMIT_DEFVALUE) Long limit,
                            @RequestParam(required = false, defaultValue = "0") Long offset) {
-        limit =  limit > MAX_LIMIT ? MAX_LIMIT : limit;
-        List<Report> tasks = Arrays.asList(new Report(1L, "Test", new Date()), new Report(23L, "Tasks", new Date(13700120)));
+        List<String[]> data = DataHolder.getInstance().getData();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (String[] row : data) {
+            Map<String, Object> item = new LinkedHashMap<>(row.length);
+            result.add(item);
+            for (int i = 1; i < row.length; i++) {
+                item.put(Data.PARAM_NAMES[i], row[i]);
+            }
+        }
 
-        /*Person person = personService.findCurrentUser();
-        if (startDate != null) {
-            tasks = taskService.findActualByPeriod(person.getId(), startDate, endDate);
-        } else {
-            tasks = taskService.findByFilters(person.getId(), statuses, limit, offset);
-        }*/
+        return result;
+    }
 
-        return tasks;
+    @RequestMapping(value = "/data2", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Report> data2() {
+        List<Report> reports = Arrays.asList(new Report(1L, "Test", new Date()), new Report(23L, "Tasks", new Date(13700120)));
+
+        return reports;
+    }
+
+    @RequestMapping(value = "/data", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String, Object>> data() {
+        List<Map<String, Object>> data = new ArrayList<>();
+        for (Object[] row : Data.val) {
+            Map<String, Object> item = new LinkedHashMap<>(row.length);
+            data.add(item);
+            for (int i = 0; i < row.length; i++) {
+                item.put(Data.PARAM_NAMES[i], row[i]);
+            }
+        }
+
+        return data;
     }
 
     public static class Report {
